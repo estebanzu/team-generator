@@ -1,0 +1,189 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Team Generator</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="css/main.css" />
+		<noscript><link rel="stylesheet" href="css/noscript.css" /></noscript>
+		<link rel="stylesheet" href="css/fontawesome-all.min.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+		<div id="wrapper">
+			<!-- Header -->
+			<header id="header">
+                <img src="images/logo.png" alt="Logo" style="max-height: 100px; margin-right: 10px;" />
+				<a href="#" class="logo">Player Qualifier</a>
+			</header>
+
+			<!-- Main -->
+			<div id="main">
+				<section class="post">
+					<header class="major">
+						<h1>Team Generator</h1>
+					</header>
+
+					<!-- Player Form -->
+					<section>
+						<h2>Add a Player</h2>
+						<form id="player-form">
+							<div class="fields">
+								<div class="field half">
+									<label for="name">Name</label>
+									<input type="text" id="name" />
+								</div>
+								<div class="field half">
+									<label for="ataque">Ataque</label>
+									<input type="number" id="ataque" min="1" max="5" />
+								</div>
+								<div class="field half">
+									<label for="defensa">Defensa</label>
+									<input type="number" id="defensa" min="1" max="5" />
+								</div>
+								<div class="field half">
+									<label for="tiro">Tiro</label>
+									<input type="number" id="tiro" min="1" max="5" />
+								</div>
+								<div class="field half">
+									<label for="pase">Pase</label>
+									<input type="number" id="pase" min="1" max="5" />
+								</div>
+								<div class="field half">
+									<label for="marca">Marca</label>
+									<input type="number" id="marca" min="1" max="5" />
+								</div>
+							</div>
+							<ul class="actions">
+								<li><button type="button" class="button primary" onclick="addPlayer()">Add Player</button></li>
+							</ul>
+						</form>
+					</section>
+
+					<!-- Player List -->
+					<section>
+						<h2>Player List</h2>
+						<div class="table-wrapper">
+							<table id="player-table">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Ataque</th>
+										<th>Defensa</th>
+										<th>Tiro</th>
+										<th>Pase</th>
+										<th>Marca</th>
+										<th>Average</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</section>
+
+					<!-- Teams -->
+					<section>
+						<h2>Teams</h2>
+						<div id="teams"></div>
+						<ul class="actions">
+							<li><button type="button" class="button primary" onclick="generateTeams()">Generate Teams</button></li>
+						</ul>
+					</section>
+				</section>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<section>
+					<p>&copy; Team Generator. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+				</section>
+			</footer>
+		</div>
+
+		<!-- Scripts -->
+		<script src="jquery.min.js"></script>
+		<script src="jquery.scrollex.min.js"></script>
+		<script src="jquery.scrolly.min.js"></script>
+		<script src="browser.min.js"></script>
+		<script src="breakpoints.min.js"></script>
+		<script src="util.js"></script>
+		<script src="main.js"></script>
+		<script>
+			const players = [];
+
+			function addPlayer() {
+				const name = document.getElementById('name').value;
+				const ataque = parseInt(document.getElementById('ataque').value);
+				const defensa = parseInt(document.getElementById('defensa').value);
+				const tiro = parseInt(document.getElementById('tiro').value);
+				const pase = parseInt(document.getElementById('pase').value);
+				const marca = parseInt(document.getElementById('marca').value);
+
+				const average = (ataque + defensa + tiro + pase + marca) / 5;
+
+				players.push({ name, ataque, defensa, tiro, pase, marca, average });
+
+				updatePlayerTable();
+
+				// Clear the form inputs
+				document.getElementById('name').value = '';
+				document.getElementById('ataque').value = '';
+				document.getElementById('defensa').value = '';
+				document.getElementById('tiro').value = '';
+				document.getElementById('pase').value = '';
+				document.getElementById('marca').value = '';
+			}
+
+			function updatePlayerTable() {
+				const playerTableBody = document.querySelector('#player-table tbody');
+				playerTableBody.innerHTML = '';  // Clear the table body
+
+				players.forEach(player => {
+					const row = document.createElement('tr');
+					
+					row.innerHTML = `
+						<td>${player.name}</td>
+						<td>${player.ataque}</td>
+						<td>${player.defensa}</td>
+						<td>${player.tiro}</td>
+						<td>${player.pase}</td>
+						<td>${player.marca}</td>
+						<td>${player.average.toFixed(2)}</td>
+					`;
+
+					playerTableBody.appendChild(row);
+				});
+			}
+
+			function generateTeams() {
+				players.sort((a, b) => b.average - a.average);
+
+				const teams = [];
+				const teamSize = 5;
+
+				while (players.length > 0) {
+					const team = [];
+					let teamRank = 0;
+
+					while (team.length < teamSize && players.length > 0) {
+						const player = players.shift();
+						team.push(player.name);
+						teamRank += player.average;
+					}
+
+					teams.push({ team, teamRank });
+				}
+
+				const teamsContainer = document.getElementById('teams');
+				teamsContainer.innerHTML = '';
+
+				teams.forEach((team, index) => {
+					const teamDiv = document.createElement('div');
+					teamDiv.innerHTML = `<strong>Team ${index + 1} (Avg Rank: ${(team.teamRank / team.length).toFixed(2)}):</strong> ${team.team.join(', ')}`;
+					teamsContainer.appendChild(teamDiv);
+				});
+			}
+		</script>
+	</body>
+</html>
