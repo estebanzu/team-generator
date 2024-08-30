@@ -17,11 +17,15 @@
 
         <!-- Main -->
         <div id="main">
-            <section class="post">
-                <header class="major">
-                    <h1>Team Generator</h1>
-                </header>
+            <!-- Tab Navigation -->
+            <ul class="tabs">
+                <li class="tab-link current" data-tab="tab-1">Add Player</li>
+                <li class="tab-link" data-tab="tab-2">Player List</li>
+                <li class="tab-link" data-tab="tab-3">Generate Teams</li>
+            </ul>
 
+            <!-- Tab Content -->
+            <div id="tab-1" class="tab-content current">
                 <!-- Player Form -->
                 <section>
                     <h2>Add a Player</h2>
@@ -37,7 +41,7 @@
                                 <button type="button" class="button primary" onclick="addPlayer()">Add Player</button>
                             </div>
                         </div>
-                        
+
                         <div class="param-table">
                             <div>
                                 <label for="pac">PAC (Pace): <span id="pac-value">50</span></label>
@@ -65,11 +69,17 @@
                             </div>
                         </div>
                     </form>
+                    <p id="addPlayerMessage" style="color: #00cc66; display: none;"></p> <!-- Message placeholder -->
                 </section>
+            </div>
 
+            <div id="tab-2" class="tab-content">
                 <!-- Player List -->
                 <section>
-                    <h2>Player List</h2>
+                    <div class="player-list-header">
+                        <h2>Player List</h2>
+                        <button type="button" class="button primary" id="exportButton" onclick="exportToCSV()" style="display: none;">Export to CSV</button>
+                    </div>
                     <div class="table-wrapper">
                         <table id="player-table">
                             <thead>
@@ -89,8 +99,13 @@
                             <tbody></tbody>
                         </table>
                     </div>
+                    <ul class="actions">
+                        <li><input type="file" id="csvFileInput" accept=".csv" onchange="importCSV(event)" /></li>
+                    </ul>
                 </section>
+            </div>
 
+            <div id="tab-3" class="tab-content">
                 <!-- Teams -->
                 <section>
                     <h2>Teams</h2>
@@ -103,7 +118,7 @@
                         <li><button type="button" class="button primary" onclick="generateTeams()">Generate Teams</button></li>
                     </ul>
                 </section>
-            </section>
+            </div>
         </div>
 
         <!-- Footer -->
@@ -118,5 +133,8 @@
     <script src="updateValues.js"></script>
     <script src="playerManagement.js"></script>
     <script src="teamManagement.js"></script>
+    <script src="exportCSV.js"></script>
+    <script src="importCSV.js"></script>
+    <script src="tabs.js"></script> <!-- New script to handle tabs -->
 </body>
 </html>
